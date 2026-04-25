@@ -2,7 +2,7 @@ import Foundation
 
 public struct SBMessage: Codable, Equatable, Hashable, Identifiable, Sendable {
     public enum From: String, Codable, Equatable, Sendable {
-        case user, assistant, system
+        case user, assistant, system, unknown
     }
     
     public struct Source: Codable, Equatable, Hashable, Sendable {
@@ -49,7 +49,7 @@ public struct SBOptions: Codable, Equatable, Hashable, Sendable {
 
 public struct SBRequest: Codable, Equatable, Hashable, Sendable {
     public enum RequestType: String, Codable, Equatable, Sendable {
-        case newChat, resumeChat, sendMessage
+        case newChat, resumeChat, sendMessage, unknown
     }
     
     public init(
