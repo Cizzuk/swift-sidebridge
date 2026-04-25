@@ -3,18 +3,20 @@ import Foundation
 public struct SBMessage: Codable, Equatable, Hashable, Identifiable, Sendable {
     public enum From: String, Codable, Equatable, Sendable {
         case user, assistant, system, unknown
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let rawValue = (try? container.decode(String.self)) ?? ""
+            self = From(rawValue: rawValue) ?? .unknown
+        }
     }
     
     public struct Source: Codable, Equatable, Hashable, Sendable {
         public init(
-            title: String = "",
+            title: String,
             url: URL
         ) {
-            if title.isEmpty {
-                self.title = url.absoluteString
-            } else {
-                self.title = title
-            }
+            self.title = title
             self.url = url
         }
         
@@ -23,10 +25,10 @@ public struct SBMessage: Codable, Equatable, Hashable, Identifiable, Sendable {
     }
     
     public init(
-        id: UUID = UUID(),
+        id: UUID,
         from: From,
         content: String,
-        sources: [Source] = []
+        sources: [Source]? = nil
     ) {
         self.id = id
         self.from = from
@@ -37,7 +39,7 @@ public struct SBMessage: Codable, Equatable, Hashable, Identifiable, Sendable {
     public var id: UUID
     public var from: From
     public var content: String
-    public var sources: [Source] = []
+    public var sources: [Source]?
 }
 
 public struct SBOptions: Codable, Equatable, Hashable, Sendable {
@@ -50,21 +52,29 @@ public struct SBOptions: Codable, Equatable, Hashable, Sendable {
 public struct SBRequest: Codable, Equatable, Hashable, Sendable {
     public enum RequestType: String, Codable, Equatable, Sendable {
         case newChat, resumeChat, sendMessage, unknown
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            let rawValue = (try? container.decode(String.self)) ?? ""
+            self = RequestType(rawValue: rawValue) ?? .unknown
+        }
     }
     
     public init(
-        chatId: UUID = UUID(),
+        sidebridge: String = "1.0",
+        chatId: UUID,
         type: RequestType,
         messages: [SBMessage]? = nil,
         history: [SBMessage]? = nil
     ) {
+        self.sidebridge = sidebridge
         self.chatId = chatId
         self.type = type
         self.messages = messages
         self.history = history
     }
     
-    public var sidebridge = "1.0"
+    public var sidebridge: String
     public var chatId: UUID
     public var type: RequestType
     public var messages: [SBMessage]?
