@@ -47,6 +47,15 @@ public struct SBOptions: Codable, Equatable, Hashable, Sendable {
     
     public var disableSendHistory: Bool? = nil
     public var endSession: Bool? = nil
+    
+    public mutating func merge(with other: SBOptions) {
+        if let disableSendHistory = other.disableSendHistory {
+            self.disableSendHistory = disableSendHistory
+        }
+        if let endSession = other.endSession {
+            self.endSession = endSession
+        }
+    }
 }
 
 public struct SBRequest: Codable, Equatable, Hashable, Sendable {
