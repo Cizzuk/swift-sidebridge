@@ -50,33 +50,20 @@ public struct SBOptions: Codable, Equatable, Hashable, Sendable {
 }
 
 public struct SBRequest: Codable, Equatable, Hashable, Sendable {
-    public enum RequestType: String, Codable, Equatable, Sendable {
-        case newChat, resumeChat, sendMessage, unknown
-
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.singleValueContainer()
-            let rawValue = (try? container.decode(String.self)) ?? ""
-            self = RequestType(rawValue: rawValue) ?? .unknown
-        }
-    }
-    
     public init(
         sidebridge: String = "1.0",
         chatId: UUID,
-        type: RequestType,
         messages: [SBMessage]? = nil,
         history: [SBMessage]? = nil
     ) {
         self.sidebridge = sidebridge
         self.chatId = chatId
-        self.type = type
         self.messages = messages
         self.history = history
     }
     
     public var sidebridge: String
     public var chatId: UUID
-    public var type: RequestType
     public var messages: [SBMessage]?
     public var history: [SBMessage]?
 }
